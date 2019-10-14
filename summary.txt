@@ -1,0 +1,18 @@
+Special problems
+
+1. comments that don't end
+
+
+We iterate through the tokens until we find '*' followed by '/'. If we reach EOF prior to that, we raise an error flag and terminate the program
+
+2.long variable names
+
+We check the length of yytext and throw an error if it exceeds the max length.
+
+3. large integers
+
+We convert yytext to an integer, compare it to the max value and throw and error if it exceeds the max value.
+
+4.floats
+
+we check for the various valid floats (ex. 0.0, 0) and use atof to account for the correct precision.
