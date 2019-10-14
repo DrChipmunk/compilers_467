@@ -105,7 +105,6 @@ extern int yyline;        /* variable holding current line number   */
  ***********************************************************************/
 program
   :   scope   {yTRACE("program -> scope")}   
-  |   %empty
   ;
 
 scope

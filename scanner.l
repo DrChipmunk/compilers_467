@@ -13,6 +13,7 @@
 #define	yyinput      input
 #define yTRACE(x)    { if (traceScanner) fprintf(traceFile, "TOKEN %3d : %s\n", x, yytext); }
 #define yERROR(x)    { fprintf(errorFile, "\nLEXICAL ERROR, LINE %d: %s\n", yyline, x); errorOccurred = TRUE; yyterminate(); }
+#define SCAN(__id)   { yTRACE(__id) return __id; }
 
 int CheckInt(void);
 int yyline = 1;
@@ -40,80 +41,80 @@ WS          [ \t]
             }
 
 \n          {yyline++;}
-{WS}        {}
+{WS}        { /* Your rules go below this rule and above EOF */ }
 
-\(		{yTRACE(TOKEN_PUNC_OPEN_PAREN)}
-\)		{yTRACE(TOKEN_PUNC_CLOSE_PAREN)}
-;		{yTRACE(TOKEN_PUNC_SEMICOLON)}
-,		{yTRACE(TOKEN_PUNC_COMMA)}
-\{		{yTRACE(TOKEN_PUNC_OPEN_BRACE)}
-\}		{yTRACE(TOKEN_PUNC_CLOSE_BRACE)}
-\[		{yTRACE(TOKEN_PUNC_OPEN_BRACKET)}
-\]		{yTRACE(TOKEN_PUNC_CLOSE_BRACKET)}
+\(		{SCAN(TOKEN_PUNC_OPEN_PAREN)}
+\)		{SCAN(TOKEN_PUNC_CLOSE_PAREN)}
+;		{SCAN(TOKEN_PUNC_SEMICOLON)}
+,		{SCAN(TOKEN_PUNC_COMMA)}
+\{		{SCAN(TOKEN_PUNC_OPEN_BRACE)}
+\}		{SCAN(TOKEN_PUNC_CLOSE_BRACE)}
+\[		{SCAN(TOKEN_PUNC_OPEN_BRACKET)}
+\]		{SCAN(TOKEN_PUNC_CLOSE_BRACKET)}
 
-=		{yTRACE(TOKEN_OP_ASSIGNMENT)}
-\+		{yTRACE(TOKEN_OP_PLUS)}
--		{yTRACE(TOKEN_OP_MINUS)}
-!		{yTRACE(TOKEN_OP_NOT)}
-==		{yTRACE(TOKEN_OP_EQUAL)}
-!=		{yTRACE(TOKEN_OP_NOT_EQUAL)}
-\<		{yTRACE(TOKEN_OP_LESS_THAN)}
-\<=		{yTRACE(TOKEN_OP_LESS_THAN_OR_EQUAL)}
-\>		{yTRACE(TOKEN_OP_GREATER_THAN)}
-\>=		{yTRACE(TOKEN_OP_GREATER_THAN_OR_EQUAL)}
-\^		{yTRACE(TOKEN_OP_POWER)}
-\*		{yTRACE(TOKEN_OP_MULTIPLY)}
-\/		{yTRACE(TOKEN_OP_DIVIDE)}
-&&		{yTRACE(TOKEN_OP_AND)}
-\|\|	{yTRACE(TOKEN_OP_OR)}
+=		{SCAN(TOKEN_OP_ASSIGNMENT)}
+\+		{SCAN(TOKEN_OP_PLUS)}
+-		{SCAN(TOKEN_OP_MINUS)}
+!		{SCAN(TOKEN_OP_NOT)}
+==		{SCAN(TOKEN_OP_EQUAL)}
+!=		{SCAN(TOKEN_OP_NOT_EQUAL)}
+\<		{SCAN(TOKEN_OP_LESS_THAN)}
+\<=		{SCAN(TOKEN_OP_LESS_THAN_OR_EQUAL)}
+\>		{SCAN(TOKEN_OP_GREATER_THAN)}
+\>=		{SCAN(TOKEN_OP_GREATER_THAN_OR_EQUAL)}
+\^		{SCAN(TOKEN_OP_POWER)}
+\*		{SCAN(TOKEN_OP_MULTIPLY)}
+\/		{SCAN(TOKEN_OP_DIVIDE)}
+&&		{SCAN(TOKEN_OP_AND)}
+\|\|	{SCAN(TOKEN_OP_OR)}
 
-bool	{yTRACE(TOKEN_TYPE_BOOL)}
-bvec2	{yTRACE(TOKEN_TYPE_BVEC2)}
-bvec3	{yTRACE(TOKEN_TYPE_BVEC3)}
-bvec4	{yTRACE(TOKEN_TYPE_BVEC4)}
+bool	{SCAN(TOKEN_TYPE_BOOL)}
+bvec2	{SCAN(TOKEN_TYPE_BVEC2)}
+bvec3	{SCAN(TOKEN_TYPE_BVEC3)}
+bvec4	{SCAN(TOKEN_TYPE_BVEC4)}
 
-int	    {yTRACE(TOKEN_TYPE_INT)}
-ivec2	{yTRACE(TOKEN_TYPE_IVEC2)}
-ivec3	{yTRACE(TOKEN_TYPE_IVEC3)}
-ivec4	{yTRACE(TOKEN_TYPE_IVEC4)}
+int	    {SCAN(TOKEN_TYPE_INT)}
+ivec2	{SCAN(TOKEN_TYPE_IVEC2)}
+ivec3	{SCAN(TOKEN_TYPE_IVEC3)}
+ivec4	{SCAN(TOKEN_TYPE_IVEC4)}
 
-float	{yTRACE(TOKEN_TYPE_FLOAT)}
-vec2	{yTRACE(TOKEN_TYPE_VEC2)}
-vec3	{yTRACE(TOKEN_TYPE_VEC3)}
-vec4	{yTRACE(TOKEN_TYPE_VEC4)}
+float	{SCAN(TOKEN_TYPE_FLOAT)}
+vec2	{SCAN(TOKEN_TYPE_VEC2)}
+vec3	{SCAN(TOKEN_TYPE_VEC3)}
+vec4	{SCAN(TOKEN_TYPE_VEC4)}
 
-lit		{yTRACE(TOKEN_FUNC_LIT)}
-dp3		{yTRACE(TOKEN_FUNC_DP3)}
-rsq		{yTRACE(TOKEN_FUNC_RSQ)}
+lit		{SCAN(TOKEN_FUNC_LIT)}
+dp3		{SCAN(TOKEN_FUNC_DP3)}
+rsq		{SCAN(TOKEN_FUNC_RSQ)}
 
-gl_FragColor	{yTRACE(TOKEN_RESULT_GL_FRAGCOLOR)}
-gl_FragDepth	{yTRACE(TOKEN_RESULT_GL_FRAGDEPTH)}
-gl_FragCoord	{yTRACE(TOKEN_RESULT_GL_FRAGCOORD)}
+gl_FragColor	{SCAN(TOKEN_RESULT_GL_FRAGCOLOR)}
+gl_FragDepth	{SCAN(TOKEN_RESULT_GL_FRAGDEPTH)}
+gl_FragCoord	{SCAN(TOKEN_RESULT_GL_FRAGCOORD)}
 
-gl_TexCoord		{yTRACE(TOKEN_ATTR_GL_TEXCOORD)}
-gl_Color		{yTRACE(TOKEN_ATTR_GL_COLOR)}
-gl_Secondary	{yTRACE(TOKEN_ATTR_GL_SECONDARY)}
-gl_FogFragCoord	{yTRACE(TOKEN_ATTR_GL_FOGFRAGCOORD)}
+gl_TexCoord		{SCAN(TOKEN_ATTR_GL_TEXCOORD)}
+gl_Color		{SCAN(TOKEN_ATTR_GL_COLOR)}
+gl_Secondary	{SCAN(TOKEN_ATTR_GL_SECONDARY)}
+gl_FogFragCoord	{SCAN(TOKEN_ATTR_GL_FOGFRAGCOORD)}
 
-gl_Light_Half			{yTRACE(TOKEN_UNIF_GL_LIGHT_HALF)}
-gl_Light_Ambient		{yTRACE(TOKEN_UNIF_GL_LIGHT_AMBIENT)}
-gl_Material_Shininess	{yTRACE(TOKEN_UNIF_GL_MATERIAL_SHININESS)}
-env1					{yTRACE(TOKEN_UNIF_ENV1)}
-env2					{yTRACE(TOKEN_UNIF_ENV2)}
-env3					{yTRACE(TOKEN_UNIF_ENV3)}
+gl_Light_Half			{SCAN(TOKEN_UNIF_GL_LIGHT_HALF)}
+gl_Light_Ambient		{SCAN(TOKEN_UNIF_GL_LIGHT_AMBIENT)}
+gl_Material_Shininess	{SCAN(TOKEN_UNIF_GL_MATERIAL_SHININESS)}
+env1					{SCAN(TOKEN_UNIF_ENV1)}
+env2					{SCAN(TOKEN_UNIF_ENV2)}
+env3					{SCAN(TOKEN_UNIF_ENV3)}
 
-if		{yTRACE(TOKEN_KEYWORD_IF)}
-else	{yTRACE(TOKEN_KEYWORD_ELSE)}
-while	{yTRACE(TOKEN_KEYWORD_WHILE)}
-const	{yTRACE(TOKEN_KEYWORD_CONST)}
+if		{SCAN(TOKEN_KEYWORD_IF)}
+else	{SCAN(TOKEN_KEYWORD_ELSE)}
+while	{SCAN(TOKEN_KEYWORD_WHILE)}
+const	{SCAN(TOKEN_KEYWORD_CONST)}
 
-true    {yTRACE(TOKEN_NUM_TRUE)}
-false	{yTRACE(TOKEN_NUM_FALSE)}
+true    {SCAN(TOKEN_NUM_TRUE)}
+false	{SCAN(TOKEN_NUM_FALSE)}
 
-(0|([1-9][0-9]*))/[^0-9a-zA-Z]	{if (atoi(yytext) > MAX_INTEGER) yERROR("Integer too big") yylval.i_value = atoi(yytext); yTRACE(TOKEN_NUM_INT)}
-((0|([1-9][0-9]*))?\.([0-9][0-9]*))(([Ee])-?(0|([1-9][0-9]*)))?/[^0-9a-zA-Z\.]	{yylval.f_value = atof(yytext); yTRACE(TOKEN_NUM_FLOAT)}
+(0|([1-9][0-9]*))/[^0-9a-zA-Z]	{if (atoi(yytext) > MAX_INTEGER) yERROR("Integer too big") yylval.i_value = atoi(yytext); SCAN(TOKEN_NUM_INT)}
+((0|([1-9][0-9]*))?\.([0-9][0-9]*))(E-?(0|([1-9][0-9]*)))?/[^0-9a-zA-Z]	{yylval.f_value = atof(yytext); SCAN(TOKEN_NUM_FLOAT)}
 
-[a-zA-Z_][a-zA-Z0-9_]*/[^\.] {if (strlen(yytext) > MAX_IDENTIFIER) yERROR("Identifier too long") yylval.var_name = strdup(yytext); yTRACE(TOKEN_VAR)}
+[a-zA-Z_][a-zA-Z0-9_]* {if (strlen(yytext) > MAX_IDENTIFIER) yERROR("Identifier too long") yylval.var_name = strdup(yytext); SCAN(TOKEN_VAR)}
 
 .           { yERROR("Unknown token"); }
 
