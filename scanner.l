@@ -111,8 +111,8 @@ const	{SCAN(TOKEN_KEYWORD_CONST)}
 true    {SCAN(TOKEN_NUM_TRUE)}
 false	{SCAN(TOKEN_NUM_FALSE)}
 
-(0|([1-9][0-9]*))/[^0-9a-zA-Z]	{if (atoi(yytext) > MAX_INTEGER) yERROR("Integer too big") yylval.i_value = atoi(yytext); SCAN(TOKEN_NUM_INT)}
-((0|([1-9][0-9]*))?\.([0-9][0-9]*))(E-?(0|([1-9][0-9]*)))?/[^0-9a-zA-Z]	{yylval.f_value = atof(yytext); SCAN(TOKEN_NUM_FLOAT)}
+(0|([1-9][0-9]*))/[^0-9a-zA-Z\._]	{if (strlen(yytext) > 5) yERROR("Integer too big") if (atoi(yytext) > MAX_INTEGER) yERROR("Integer too big") yylval.i_value = atoi(yytext); SCAN(TOKEN_NUM_INT)}
+(0|([1-9][0-9]*))?(\.([0-9]*))?(([Ee])-?(0|([1-9][0-9]*)))?/[^0-9a-zA-Z\._]	{yylval.f_value = atof(yytext); SCAN(TOKEN_NUM_FLOAT)}
 
 [a-zA-Z_][a-zA-Z0-9_]* {if (strlen(yytext) > MAX_IDENTIFIER) yERROR("Identifier too long") yylval.var_name = strdup(yytext); SCAN(TOKEN_VAR)}
 
