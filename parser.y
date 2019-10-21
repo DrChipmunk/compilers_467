@@ -112,12 +112,12 @@ scope
   ;
 
 declarations
-  :   declaration declarations {yTRACE("declarations -> declaration declarations")}
+  :   declarations declaration {yTRACE("declarations -> declarations declaration")}
   |   %empty {yTRACE("declarations -> %empty")}
   ;
 
 statements
-  :   statement statements {yTRACE("statements -> statement statements")}
+  :   statements statement {yTRACE("statements -> statements statement")}
   |   %empty {yTRACE("statements -> %empty")}
   ;
 
@@ -129,11 +129,15 @@ declaration
 
 statement
   :   variable TOKEN_OP_ASSIGNMENT expression TOKEN_PUNC_SEMICOLON {yTRACE("statement -> variable TOKEN_OP_ASSIGNMENT expression TOKEN_PUNC_SEMICOLON")}
-  |   TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement {yTRACE("statement -> TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement")}
-  |   TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement TOKEN_KEYWORD_ELSE statement {yTRACE("statement -> TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement TOKEN_KEYWORD_ELSE statement")}
+  |   TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement optional_else {yTRACE("statement -> TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement optional_else")}
   |   TOKEN_KEYWORD_WHILE TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement {yTRACE("statement -> TOKEN_KEYWORD_WHILE TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement")}
   |   scope {yTRACE("statement -> scope")}
   |   TOKEN_PUNC_SEMICOLON {yTRACE("statement -> TOKEN_PUNC_SEMICOLON")}
+  ;
+
+optional_else
+  :    TOKEN_KEYWORD_ELSE statement {yTRACE("optional_else -> TOKEN_KEYWORD_ELSE statement")}
+  |    %empty {yTRACE("optional_else -> %empty")}
   ;
 
 type
@@ -159,7 +163,7 @@ expression
   |     variable        {yTRACE("expression -> variable")}
   |     TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN  {yTRACE("expression -> TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN")}
   |     TOKEN_OP_MINUS expression %prec UNARY {yTRACE("expression -> TOKEN_OP_MINUS expression")}
-  |     TOKEN_OP_NOT expression{yTRACE("expression -> TOKEN_OP_NOT expression")}
+  |     TOKEN_OP_NOT expression {yTRACE("expression -> TOKEN_OP_NOT expression")}
   |     expression binary_op expression  {yTRACE("expression -> expression binary_op expression")}
   |     constructor  {yTRACE("expression -> constructor")}
   |     function  {yTRACE("expression -> function")}
@@ -208,8 +212,7 @@ constructor
   ;
 
 function
-  :    function_name TOKEN_PUNC_OPEN_PAREN arguments TOKEN_PUNC_CLOSE_PAREN {yTRACE("function -> function_name TOKEN_PUNC_OPEN_PAREN arguments TOKEN_PUNC_CLOSE_PAREN")}
-  |    function_name TOKEN_PUNC_OPEN_PAREN TOKEN_PUNC_CLOSE_PAREN {yTRACE("function -> function_name TOKEN_PUNC_OPEN_PAREN TOKEN_PUNC_CLOSE_PAREN")}
+  :    function_name TOKEN_PUNC_OPEN_PAREN optional_arguments TOKEN_PUNC_CLOSE_PAREN {yTRACE("function -> function_name TOKEN_PUNC_OPEN_PAREN optional_arguments TOKEN_PUNC_CLOSE_PAREN")}
   ;
 
 function_name
@@ -218,8 +221,13 @@ function_name
   |     TOKEN_FUNC_RSQ {yTRACE("function_name -> TOKEN_FUNC_RSQ")}  
   ;
 
+optional_arguments
+  :    arguments {yTRACE("optional_arguments -> arguments")}
+  |    %empty {yTRACE("optional_arguments -> %empty")}
+  ;
+
 arguments
-  :    expression TOKEN_PUNC_COMMA arguments {yTRACE("arguments -> expression TOKEN_PUNC_COMMA arguments")} 
+  :    arguments TOKEN_PUNC_COMMA expression {yTRACE("arguments -> arguments TOKEN_PUNC_COMMA expression")} 
   |    expression {yTRACE("arguments -> expression")} 
   ;
 
