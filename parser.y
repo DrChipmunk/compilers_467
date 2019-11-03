@@ -70,6 +70,9 @@ extern int yyline;        /* variable holding current line number   */
 
 %token TOKEN_KEYWORD_IF TOKEN_KEYWORD_ELSE TOKEN_KEYWORD_WHILE TOKEN_KEYWORD_CONST 
 
+%precedence WITHOUT_ELSE
+%precedence WITH_ELSE
+
 %left TOKEN_OP_OR
 
 %left TOKEN_OP_AND
@@ -129,15 +132,11 @@ declaration
 
 statement
   :   variable TOKEN_OP_ASSIGNMENT expression TOKEN_PUNC_SEMICOLON {yTRACE("statement -> variable TOKEN_OP_ASSIGNMENT expression TOKEN_PUNC_SEMICOLON")}
-  |   TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement optional_else {yTRACE("statement -> TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement optional_else")}
+  |   TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement TOKEN_KEYWORD_ELSE statement %prec WITH_ELSE {yTRACE("statement -> TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement TOKEN_KEYWORD_ELSE statement")}
+  |   TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement %prec WITHOUT_ELSE {yTRACE("statement -> TOKEN_KEYWORD_IF TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement")}
   |   TOKEN_KEYWORD_WHILE TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement {yTRACE("statement -> TOKEN_KEYWORD_WHILE TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN statement")}
   |   scope {yTRACE("statement -> scope")}
   |   TOKEN_PUNC_SEMICOLON {yTRACE("statement -> TOKEN_PUNC_SEMICOLON")}
-  ;
-
-optional_else
-  :    TOKEN_KEYWORD_ELSE statement {yTRACE("optional_else -> TOKEN_KEYWORD_ELSE statement")}
-  |    %empty {yTRACE("optional_else -> %empty")}
   ;
 
 type
@@ -164,25 +163,21 @@ expression
   |     TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN  {yTRACE("expression -> TOKEN_PUNC_OPEN_PAREN expression TOKEN_PUNC_CLOSE_PAREN")}
   |     TOKEN_OP_MINUS expression %prec UNARY {yTRACE("expression -> TOKEN_OP_MINUS expression")}
   |     TOKEN_OP_NOT expression {yTRACE("expression -> TOKEN_OP_NOT expression")}
-  |     expression binary_op expression  {yTRACE("expression -> expression binary_op expression")}
+  |     expression TOKEN_OP_PLUS expression  {yTRACE("expression -> expression TOKEN_OP_PLUS expression")}
+  |     expression TOKEN_OP_MINUS expression  {yTRACE("expression -> expression TOKEN_OP_MINUS expression")}
+  |     expression TOKEN_OP_EQUAL expression  {yTRACE("expression -> expression TOKEN_OP_EQUAL expression")}
+  |     expression TOKEN_OP_NOT_EQUAL expression  {yTRACE("expression -> expression TOKEN_OP_NOT_EQUAL expression")}
+  |     expression TOKEN_OP_LESS_THAN expression  {yTRACE("expression -> expression TOKEN_OP_LESS_THAN expression")}
+  |     expression TOKEN_OP_LESS_THAN_OR_EQUAL expression  {yTRACE("expression -> expression TOKEN_OP_LESS_THAN_OR_EQUAL expression")}
+  |     expression TOKEN_OP_GREATER_THAN expression  {yTRACE("expression -> expression TOKEN_OP_GREATER_THAN expression")}
+  |     expression TOKEN_OP_GREATER_THAN_OR_EQUAL expression  {yTRACE("expression -> expression TOKEN_OP_GREATER_THAN_OR_EQUAL expression")}
+  |     expression TOKEN_OP_POWER expression  {yTRACE("expression -> expression TOKEN_OP_POWER expression")}
+  |     expression TOKEN_OP_MULTIPLY expression  {yTRACE("expression -> expression TOKEN_OP_MULTIPLY expression")}
+  |     expression TOKEN_OP_DIVIDE expression  {yTRACE("expression -> expression TOKEN_OP_DIVIDE expression")}
+  |     expression TOKEN_OP_AND expression  {yTRACE("expression -> expression TOKEN_OP_AND expression")}
+  |     expression TOKEN_OP_OR expression  {yTRACE("expression -> expression TOKEN_OP_OR expression")}
   |     constructor  {yTRACE("expression -> constructor")}
   |     function  {yTRACE("expression -> function")}
-  ;
-
-binary_op
-  :     TOKEN_OP_PLUS {yTRACE("binary_op -> TOKEN_OP_PLUS")} 
-  |     TOKEN_OP_MINUS {yTRACE("binary_op -> TOKEN_OP_MINUS")}  
-  |     TOKEN_OP_EQUAL {yTRACE("binary_op -> TOKEN_OP_EQUAL")}  
-  |     TOKEN_OP_NOT_EQUAL {yTRACE("binary_op -> TOKEN_OP_NOT_EQUAL")}  
-  |     TOKEN_OP_LESS_THAN {yTRACE("binary_op -> TOKEN_OP_LESS_THAN")}  
-  |     TOKEN_OP_LESS_THAN_OR_EQUAL {yTRACE("binary_op -> TOKEN_OP_LESS_THAN_OR_EQUAL")} 
-  |     TOKEN_OP_GREATER_THAN {yTRACE("binary_op -> TOKEN_OP_GREATER_THAN")}  
-  |     TOKEN_OP_GREATER_THAN_OR_EQUAL {yTRACE("binary_op -> TOKEN_OP_GREATER_THAN_OR_EQUAL")}  
-  |     TOKEN_OP_POWER {yTRACE("binary_op -> TOKEN_OP_POWER")}  
-  |     TOKEN_OP_MULTIPLY {yTRACE("binary_op -> TOKEN_OP_MULTIPLY")}  
-  |     TOKEN_OP_DIVIDE {yTRACE("binary_op -> TOKEN_OP_DIVIDE")}  
-  |     TOKEN_OP_AND {yTRACE("binary_op -> TOKEN_OP_AND")}  
-  |     TOKEN_OP_OR {yTRACE("binary_op -> TOKEN_OP_OR")}  
   ;
 
 variable
